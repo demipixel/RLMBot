@@ -1,0 +1,12 @@
+{
+  "discord": {
+    "token": ""
+  },
+
+  "reddit": {
+    "username": "",
+    "password": "",
+    "id": "",
+    "secret": ""
+  }
+}

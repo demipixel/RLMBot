@@ -1,0 +1,19 @@
+{
+  "name": "rlm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DemiPixel <luke5227@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^1.21.0",
+    "discord.js": "^9.3.0",
+    "moment": "^2.15.1",
+    "mongoose": "^4.6.3",
+    "random-seed": "^0.3.0",
+    "snoowrap": "^1.10.0"
+  }
+}
