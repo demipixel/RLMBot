@@ -54,7 +54,7 @@ bot.on('message', msg => {
     msg.channel.sendMessage(str !== undefined ? (mention === true ? msg.member : mention)+': '+str : mention).catch(e => console.log(e));
   }
 
-  if (msg.content.startsWith('!verify')) {
+  if (msg.content.startsWith('!verify') || msg.content == '!verify') {
     if (msg.member.roles.find('name', 'Reddit Verified')) return respond(true, 'You are already reddit verified!');
     db.getUser(msg.member.id, (err, user) => {
       if (err) return console.log(err) || respond(true, 'There was an error fetching your database entry!');
