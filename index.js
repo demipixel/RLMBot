@@ -43,7 +43,7 @@ bot.on('disconnected', () => {
 });
 
 bot.on('guildMemberAdd', (guild, member) => {
-  guild.defaultChannel.sendMessage('Welcome '+member+'! There are now '+guild.members.size+' total users.');
+  guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to #reddit and type `!verify`!');
 });
 
 const REDDIT_VERIFICATION_STRING = 'I verify that I am %user% on the Rocket League Market Discord: %code%'
