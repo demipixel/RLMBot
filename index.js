@@ -49,6 +49,7 @@ bot.on('guildMemberAdd', (guild, member) => {
 const REDDIT_VERIFICATION_STRING = 'I verify that I am %user% on the Rocket League Market Discord: %code%'
 
 bot.on('message', msg => {
+  log('['+(msg.member?msg.member.id:msg.channel.id)+'] #'+msg.channel.name+'-'+(msg.member ? msg.member.user.username : msg.channel.id)+': '+msg.content);
 
   const respond = (mention, str) => {
     msg.channel.sendMessage(str !== undefined ? (mention === true ? msg.member : mention)+': '+str : mention).catch(e => console.log(e));
