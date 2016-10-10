@@ -16,7 +16,7 @@ module.exports = function(db) {
       discord: id,
       redditKey: generateCode(g)
     });
-    newUser.save();
+    newUser.save(err => cb(err, newUser));
   }
 
   function getUserRedditKey(key, cb) {
