@@ -31,10 +31,40 @@ module.exports = function(db) {
     });
   }
 
+
+
+  function hasRedditBan(username, cb) {
+    db.reddit.find({ reddit: username }, (err, users) => {
+      cb(err, users && users[0] ? true : false);
+    });
+  }
+
+  function createRedditBan(username, addedBy, cb) {
+    hasRedditBan(username, (err, hasBan) => {
+      if (hasBan || err) return cb(err, hasBan);
+      const ban = new db.reddit({
+        reddit: username,
+        addedBy: addedBy
+      });
+      ban.save(err => cb(err, false, ban));
+    });
+  }
+
+  function removeRedditBan(username, cb) {
+    db.reddit.find({ reddit: username}, (err, users) => {
+      if (!users || !users[0]) cb(err, false);
+      else users[0].remove(err => cb(err, true));
+    });
+  }
+
   return {
     getUser: getUser,
     getUserRedditKey: getUserRedditKey,
-    getUserReddit: getUserReddit
+    getUserReddit: getUserReddit,
+
+    hasRedditBan: hasRedditBan,
+    createRedditBan: createRedditBan,
+    removeRedditBan: removeRedditBan
   };
 }
 
