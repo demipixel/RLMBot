@@ -80,7 +80,13 @@ bot.on('message', msg => {
     db.createRedditBan(username, msg.member.user.id, (err, alreadyBanned) => {
       if (err) respond(true, 'There was an error with the database!');
       else if (alreadyBanned) respond(true, 'This user is already banned!');
-      else respond(true, '/u/'+username+' is now reddit banned.');
+      else {
+        respond(true, '/u/'+username+' is now reddit banned.');
+        db.getUserReddit(username, (err, user) => {
+          if (err) respond(true, 'There was an error with the database!');
+          else if (user) respond(true, '**WARNING** This user has already linked their reddit account: <@'+user.discord+'>');
+        });
+      }
     });
   } else if (msg.content.startsWith('!rmredditban') && isMod && msg.member) {
     const username = msg.content.replace('!rmredditban', '').trim();
