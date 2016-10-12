@@ -169,8 +169,6 @@ bot.on('message', msg => {
 
       const member = msg.channel.guild.members.get(userId);
 
-      console.log(userId);
-
       savedActions[msg.member.id] = {
         type: 'ban',
         id: userId,

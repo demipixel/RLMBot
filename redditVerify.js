@@ -27,7 +27,7 @@ module.exports = function(bot, reddit, db) {
                       discordUser.sendMessage('You are already verified!');
                     } else if (Date.now() - info.created_utc < 1000*60*60*24*7) {
                       discordUser.sendMessage('Your reddit account must be at least a week old.')
-                      if (isBanned) modChannel.sendMessage(discordUser + ' (/u/'+item.author.name+') tried to join our server, but they are marked as reddit banned AND their account is less than a week old! No action has been taken.');
+                      if (isBanned) modChannel.sendMessage('@here: '+discordUser + ' (/u/'+item.author.name+') tried to join our server, but they are marked as reddit banned AND their account is less than a week old! No action has been taken.');
                     } else {
                       user.reddit = item.author.name;
                       user.save();
@@ -36,7 +36,7 @@ module.exports = function(bot, reddit, db) {
                         discordUser.sendMessage('You are now verified!');
                       } else {
                         discordUser.sendMessage('Your verification is pending review.');
-                        modChannel.sendMessage(discordUser + ' (/u/'+item.author.name+') tried to join our server, but they are marked as reddit banned! No action has been taken.');
+                        modChannel.sendMessage('@here: '+discordUser + ' (/u/'+item.author.name+') tried to join our server, but they are marked as reddit banned! No action has been taken.');
                       }
                     }
                   });
