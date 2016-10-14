@@ -93,7 +93,7 @@ bot.on('disconnected', () => {
 });
 
 bot.on('guildMemberAdd', (guild, member) => {
-  guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to #reddit and type `!verify`!');
+  guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to '+guild.channels.find('name', 'commands')+' and type `!verify`!');
 });
 
 const REDDIT_VERIFICATION_STRING = 'I verify that I am %user% on the Rocket League Market Discord: %code%'
@@ -120,6 +120,8 @@ bot.on('message', msg => {
   const modAction = msg.channel.name == 'mod-action';
 
   if (checkCommand(msg.content, '!verify')) {
+    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'command'));
+
     if (msg.member.roles.find('name', 'Reddit Verified')) return respond(true, 'You are already reddit verified!');
     db.getUser(msg.member.id, (err, user) => {
       if (err) return console.log(err) || respond(true, 'There was an error fetching your database entry!');
@@ -128,6 +130,8 @@ bot.on('message', msg => {
       msg.member.user.sendMessage('Click on the following link. After hitting "send", you should be verified within ten seconds\n\n'+link);
     });
   } else if (checkCommand(msg.content, '!reddit')) {
+    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'command'));
+
     const user = msg.mentions.users.array()[0];
     if (!user) return respond(true, 'Usage: `!reddit @User`');
     db.getUser(user.id, (err, dbUser) => {
@@ -328,9 +332,11 @@ bot.on('message', msg => {
       });
     });
   } else if (checkCommand(msg.content, '!rep')) {
+    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'command'));
+    
     const str = msg.content.replace('!rep', '').trim();
     if (!str) {
-      respond(true, 'Usage: `!rep <steam id OR steam profile>');
+      respond(true, 'Usage: `!rep <steam id OR steam profile>`');
       return;
     } else if (DEBUG) {
       respond(true, 'I am currently in debug mode which means I will be unable to provide rep links at this time!');
