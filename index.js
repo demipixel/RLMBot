@@ -118,9 +118,10 @@ bot.on('message', msg => {
 
   const isMod = msg.member ? msg.member.roles.find('name', 'Moderator') || msg.member.roles.find('name', 'Admin') : false;
   const modAction = msg.channel.name == 'mod-action';
+  const inCommands = msg.channel.name == 'commands';
 
   if (checkCommand(msg.content, '!verify')) {
-    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
+    if (!inCommands && !modAction) return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
 
     if (msg.member.roles.find('name', 'Reddit Verified')) return respond(true, 'You are already reddit verified!');
     db.getUser(msg.member.id, (err, user) => {
@@ -130,7 +131,7 @@ bot.on('message', msg => {
       msg.member.user.sendMessage('Click on the following link. After hitting "send", you should be verified within ten seconds\n\n'+link);
     });
   } else if (checkCommand(msg.content, '!reddit')) {
-    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
+    if (!inCommands && !modAction) return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
 
     const user = msg.mentions.users.array()[0];
     if (!user) return respond(true, 'Usage: `!reddit @User`');
@@ -138,6 +139,15 @@ bot.on('message', msg => {
       if (checkErr(err)) return;
       else if (!dbUser || !dbUser.reddit) respond(true, 'This user has not connected their reddit account yet!');
       else respond(true, 'This user\'s reddit account is /u/'+dbUser.reddit+' (https://www.reddit.com/u/'+dbUser.reddit+')');
+    });
+  } else if (checkCommand(msg.content, '!whois')) {
+    if (!inCommands && !modAction) return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
+
+    const redditUsername = msg.content.replace('!whois').trim();
+    db.getUserReddit(redditUsername, (err, user) => {
+      if (checkErr(err)) return;
+      else if (!user) return respond(true, 'Could not find /u/'+redditUsername+'!');
+      else return respond(true, '/u/'+redditUsername+' is registered to <@'+user.discord+'>');
     });
   } else if (checkCommand(msg.content, '!redditban') && isMod && msg.member) {
     const username = msg.content.replace('!redditban', '').trim();
@@ -332,7 +342,7 @@ bot.on('message', msg => {
       });
     });
   } else if (checkCommand(msg.content, '!rep')) {
-    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
+    if (!inCommands && !modAction) return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
 
     const str = msg.content.replace('!rep', '').trim();
     if (!str) {
