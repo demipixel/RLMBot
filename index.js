@@ -336,7 +336,7 @@ bot.on('message', msg => {
 
     const str = msg.content.replace('!rep', '').trim();
     if (!str) {
-      respond(true, 'Usage: `!rep <steam id OR steam profile>`');
+      respond(true, 'Usage: `!rep <steam64 id OR steam profile>`');
       return;
     } else if (DEBUG) {
       respond(true, 'I am currently in debug mode which means I will be unable to provide rep links at this time!');
@@ -345,7 +345,7 @@ bot.on('message', msg => {
     requestRep(str, (dbErr, strErr, link) => {
       if (checkErr(dbErr)) return;
       else if (strErr) respond(true, strErr);
-      else if (!link) respond(true, 'That\'s not a valid format! Use a user\'s Steam ID or their Steam profile link.');
+      else if (!link) respond(true, 'That\'s not a valid format! Use a user\'s Steam64 ID or their Steam profile link.');
       else respond(true, link);
     });
   } else if (checkCommand(msg.content, '!random') && isMod) {
