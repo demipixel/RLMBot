@@ -333,7 +333,7 @@ bot.on('message', msg => {
     });
   } else if (checkCommand(msg.content, '!rep')) {
     if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'command'));
-    
+
     const str = msg.content.replace('!rep', '').trim();
     if (!str) {
       respond(true, 'Usage: `!rep <steam id OR steam profile>`');
@@ -348,6 +348,9 @@ bot.on('message', msg => {
       else if (!link) respond(true, 'That\'s not a valid format! Use a user\'s Steam ID or their Steam profile link.');
       else respond(true, link);
     });
+  } else if (checkCommand(msg.content, '!random') && isMod) {
+    const members = msg.channel.guild.roles.find('name', 'Reddit Verified').members.array();
+    respond('Congratulations '+members[Math.floor(Math.random()*members.length)]);
   }
 });
 
