@@ -332,6 +332,9 @@ bot.on('message', msg => {
     if (!str) {
       respond(true, 'Usage: `!rep <steam id OR steam profile>');
       return;
+    } else if (DEBUG) {
+      respond(true, 'I am currently in debug mode which means I will be unable to provide rep links at this time!');
+      return;
     }
     requestRep(str, (dbErr, strErr, link) => {
       if (checkErr(dbErr)) return;
