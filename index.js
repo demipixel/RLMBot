@@ -143,7 +143,7 @@ bot.on('message', msg => {
   } else if (checkCommand(msg.content, '!whois')) {
     if (!inCommands && !modAction) return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
 
-    const redditUsername = msg.content.replace('!whois').trim();
+    const redditUsername = msg.content.replace('!whois', '').trim();
     db.getUserReddit(redditUsername, (err, user) => {
       if (checkErr(err)) return;
       else if (!user) return respond(true, 'Could not find /u/'+redditUsername+'!');
