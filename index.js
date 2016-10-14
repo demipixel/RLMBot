@@ -3,6 +3,9 @@ const Snoowrap = require('snoowrap');
 const Discord = require('discord.js');
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
+const fs = require('fs');
+
+mongoose.Promise = require('bluebird')
 
 const bot = new Discord.Client();
 
@@ -13,6 +16,8 @@ const reddit = new Snoowrap({
     username: config.get('reddit.username'),
     password: config.get('reddit.password')
 });
+
+/* DATABASE */
 
 const MongoDB = mongoose.connect('mongodb://localhost:27017').connection;
 
@@ -27,10 +32,28 @@ MongoDB.once('open', function() {
 const dbSchemas = {
   discord: require('./schemas/discord')(mongoose),
   reddit: require('./schemas/reddit')(mongoose),
-  ban: require('./schemas/ban')(mongoose)
+  ban: require('./schemas/ban')(mongoose),
+  rep: require('./schemas/rep')(mongoose)
 }
 
-const db = require('./db')(dbSchemas);
+const db = require('./db')(dbSchemas, reddit);
+
+/* DEBUG */
+
+let DEBUG = false;
+try {
+  fs.accessSync('./debug');
+  DEBUG = true;
+} catch (e) {
+  DEBUG = false;
+}
+
+/* LOCAL LIBS */
+
+const sw = require('./steamweb')(config.get('steam.key'));
+const requestRep = require('./requestRep')(db, sw, DEBUG);
+
+/* CONSTANTS & MAIN VARS */
 
 let DEFAULT_GUILD = null;
 const savedActions = {};
@@ -38,12 +61,14 @@ const MESSAGES = {
   DB_ERR: 'There was an error accessing the database.'
 }
 
+/* FUNCTIONS & EVENTS HERE WE COME */
+
 function log(...strs) {
   console.log(moment().format('LLL')+']',...strs);
 }
 
 bot.on('ready', () => {
-  log('Bot connected to Discord');
+  log('Bot connected to Discord'+(DEBUG ? ' in DEBUG' : ''));
   DEFAULT_GUILD = bot.guilds.first();
 
   setInterval(() => {
@@ -135,7 +160,7 @@ bot.on('message', msg => {
   } else if (checkCommand(msg.content, '!bans') && isMod) {
     if (!modAction) return respond(true, 'This command can only be performed in #mod-action');
 
-    db.getUserFromString(msg.channel.guild, msg.content.replace('!bans ', ''), (err, userId) => {
+    db.getUserFromString(msg.channel.guild, msg.content.replace('!bans', ''), (err, userId) => {
       if (checkErr(err)) return;
       else if (!userId) return respond(true, 'Could not find that user!');
 
@@ -302,6 +327,18 @@ bot.on('message', msg => {
         respond(true, 'Are you sure you\'d like to cancel that ban created by <@'+bans[item].from+'> on '+getTimeFormat(bans[item].date)+'? Respond with `y` or `n`.');
       });
     });
+  } else if (checkCommand(msg.content, '!rep')) {
+    const str = msg.content.replace('!rep', '').trim();
+    if (!str) {
+      respond(true, 'Usage: `!rep <steam id OR steam profile>');
+      return;
+    }
+    requestRep(str, (dbErr, strErr, link) => {
+      if (checkErr(dbErr)) return;
+      else if (strErr) respond(true, strErr);
+      else if (!link) respond(true, 'That\'s not a valid format! Use a user\'s Steam ID or their Steam profile link.');
+      else respond(true, link);
+    });
   }
 });
 
@@ -330,7 +367,7 @@ function parseTimeFormat(str) { // Parse a string such as "3d4h30m"
   else return minutes*60 + hours*60*60 + days*60*60*24; // Return in seconds
 }
 
-require('./redditVerify')(bot, reddit, db);
+require('./redditVerify')(config, bot, reddit, db, sw, requestRep);
 
 
 bot.login(config.get('discord.token'));

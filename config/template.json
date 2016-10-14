@@ -8,5 +8,9 @@
     "password": "",
     "id": "",
     "secret": ""
+  },
+
+  "steam": {
+    "key": ""
   }
 }

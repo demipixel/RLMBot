@@ -1,6 +1,7 @@
 const gen = require('random-seed');
+const moment = require('moment-timezone');
 
-module.exports = function(db) {
+module.exports = function(db, reddit) {
 
   /* GET AND CREATE DISCORD USERS */
 
@@ -124,6 +125,37 @@ module.exports = function(db) {
     } else return cb(null, null);
   }
 
+  /* REDDIT REP */
+
+  function getRep(id, summ, cb) {
+    db.rep.find({ steam: id }, (err, reps) => {
+      if (err) return cb(err);
+      if (reps && reps[0]) return cb(null, reps[0].link);
+      let text = 'If you were linked to this page, make sure you are actually friends and speaking with this user:\n\nhttp://steamcommunity.com/profiles/'+id+'/';
+      if (summ) { // Other summary info...?
+        if (summ.timecreated) text += '\n\nAccount Created: '+moment(summ.timecreated*1000).tz('America/New_York').format('LL');
+      }
+      reddit.submitSelfpost({
+        subredditName: 'RLRep',
+        title: id,
+        text: text,
+        sendReplies: false
+      }).then(submission => {
+        const link = 'https://www.reddit.com/r/RLRep/comments/'+submission.name.slice(3, 10)+'/'+id+'/'
+        const rep = new db.rep({
+          steam: id,
+          link: link
+        });
+        rep.save(err => {
+          if (err) submission.delete();
+          cb(err, link)
+        });
+      }).catch(err => {
+        cb(err);
+      });
+    });
+  }
+
   return {
     getUser: getUser,
     getUserRedditKey: getUserRedditKey,
@@ -138,7 +170,9 @@ module.exports = function(db) {
     getBans: getBans,
     getExpiredBans: getExpiredBans,
 
-    getUserFromString: getUserFromString
+    getUserFromString: getUserFromString,
+
+    getRep: getRep
   };
 }
 
