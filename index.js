@@ -120,7 +120,7 @@ bot.on('message', msg => {
   const modAction = msg.channel.name == 'mod-action';
 
   if (checkCommand(msg.content, '!verify')) {
-    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'command'));
+    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
 
     if (msg.member.roles.find('name', 'Reddit Verified')) return respond(true, 'You are already reddit verified!');
     db.getUser(msg.member.id, (err, user) => {
@@ -130,7 +130,7 @@ bot.on('message', msg => {
       msg.member.user.sendMessage('Click on the following link. After hitting "send", you should be verified within ten seconds\n\n'+link);
     });
   } else if (checkCommand(msg.content, '!reddit')) {
-    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'command'));
+    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
 
     const user = msg.mentions.users.array()[0];
     if (!user) return respond(true, 'Usage: `!reddit @User`');
@@ -332,7 +332,7 @@ bot.on('message', msg => {
       });
     });
   } else if (checkCommand(msg.content, '!rep')) {
-    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'command'));
+    if (msg.channel.name != 'commands') return respond(true, 'Use this in '+msg.channel.guild.channels.find('name', 'commands'));
 
     const str = msg.content.replace('!rep', '').trim();
     if (!str) {
