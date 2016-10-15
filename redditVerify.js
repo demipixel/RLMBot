@@ -11,7 +11,7 @@ module.exports = function(config, bot, reddit, db, sw, requestRep) {
 
   function redditVerify(item) {
     if (item.was_comment) return false; // Only PMs
-    const match = item.body.match(/^I verify that I am [^ ]+ on the Rocket League Market Discord: (.+)/)
+    const match = item.body.match(/^I verify that I am .+ on the Rocket League Market Discord: (.+)/)
     if (!match) return false;
 
     item.author.fetch().then(info => {
