@@ -361,6 +361,9 @@ bot.on('message', msg => {
   } else if (checkCommand(msg.content, '!random') && isMod) {
     const members = msg.channel.guild.roles.find('name', 'Reddit Verified').members.array();
     respond('Congratulations '+members[Math.floor(Math.random()*members.length)]);
+  } else if (checkCommand(msg.content, '!randomonline') && isMod) {
+    const members = msg.channel.guild.roles.find('name', 'Reddit Verified').members.array().filter(m => m.user.status != 'offline');
+    respond('Congratulations '+members[Math.floor(Math.random()*members.length)]);
   }
 });
 
