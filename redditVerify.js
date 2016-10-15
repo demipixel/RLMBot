@@ -34,7 +34,7 @@ module.exports = function(config, bot, reddit, db, sw, requestRep) {
                 discordUser.sendMessage('You are not in the Rocket League Market discord!');
               } else if (guild.members.get(user.discord).roles.find('name', 'Reddit Verified')) {
                 discordUser.sendMessage('You are already verified!');
-              } else if (Date.now()/1000 - info.created_utc < 1000*60*60*24*7) {
+              } else if (Date.now()/1000 - info.created_utc < 60*60*24*7) {
                 discordUser.sendMessage('Your reddit account must be at least a week old.')
                 if (isBanned) modChannel.sendMessage('@here: '+discordUser + ' (/u/'+item.author.name+') tried to join our server, but they are marked as reddit banned AND their account is less than a week old! No action has been taken.');
               } else {
