@@ -96,6 +96,10 @@ bot.on('guildMemberAdd', (guild, member) => {
   guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to '+guild.channels.find('name', 'commands')+' and type `!verify`!');
 });
 
+bot.on('guildMemberRemove', (guild, member) => {
+  guild.channels.find('name', 'mod-action').sendMessage(member+' left the server!');
+});
+
 const REDDIT_VERIFICATION_STRING = 'I verify that I am %user% on the Rocket League Market Discord: %code%'
 
 function checkCommand(str, cmd) { return str.startsWith(cmd+' ') || str == cmd; }
