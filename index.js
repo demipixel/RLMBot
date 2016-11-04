@@ -96,7 +96,7 @@ bot.on('guildMemberAdd', (guild, member) => {
   guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to '+guild.channels.find('name', 'commands')+' and type `!verify` to view trading channels!');
   db.getUser(member.id, (err, user) => {
     if (user.reddit) {
-      member.addRole(guild.roles.find('Reddit Verified'));
+      member.addRole(guild.roles.find('name', 'Reddit Verified'));
     }
   });
 });
@@ -136,7 +136,7 @@ bot.on('message', msg => {
     db.getUser(msg.member.id, (err, user) => {
       if (err) return console.log(err) || respond(true, 'There was an error fetching your database entry!');
       else if (user.reddit) {
-        msg.member.addRole(msg.channel.guild.roles.find('Reddit Verified')).then(() => {
+        msg.member.addRole(msg.channel.guild.roles.find('name', 'Reddit Verified')).then(() => {
           respond(true, 'You have been reverified!');
         }).catch((e) => {
           respond(true, 'There was an error trying to reverify you!');
