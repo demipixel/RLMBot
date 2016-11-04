@@ -13,6 +13,7 @@ module.exports = function(config, bot, reddit, db, sw, requestRep) {
     if (item.was_comment) return false; // Only PMs
     const match = item.body.match(/^I verify that I am .+ on the Rocket League Market Discord: (.+)/)
     if (!match) return false;
+    item.markAsRead();
 
     item.author.fetch().then(info => {
       db.getUserRedditKey(match[1], (err, user) => {
@@ -25,7 +26,6 @@ module.exports = function(config, bot, reddit, db, sw, requestRep) {
 
             db.hasRedditBan(item.author.name, (err, isBanned) => {
               if (err) return item.reply('There was an error trying to access the database!');
-              item.markAsRead();
 
               const discordUser = bot.users.get(user.discord);
               const guild = bot.guilds.array()[0];

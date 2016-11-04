@@ -94,6 +94,11 @@ bot.on('disconnected', () => {
 
 bot.on('guildMemberAdd', (guild, member) => {
   guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to '+guild.channels.find('name', 'commands')+' and type `!verify` to view trading channels!');
+  db.getUser(member.id, (err, user) => {
+    if (user.reddit) {
+      member.addRole(guild.roles.find('Reddit Verified'));
+    }
+  });
 });
 
 bot.on('guildMemberRemove', (guild, member) => {
@@ -130,6 +135,15 @@ bot.on('message', msg => {
     if (msg.member.roles.find('name', 'Reddit Verified')) return respond(true, 'You are already reddit verified!');
     db.getUser(msg.member.id, (err, user) => {
       if (err) return console.log(err) || respond(true, 'There was an error fetching your database entry!');
+      else if (user.reddit) {
+        msg.member.addRole(msg.channel.guild.roles.find('Reddit Verified')).then(() => {
+          respond(true, 'You have been reverified!');
+        }).catch((e) => {
+          respond(true, 'There was an error trying to reverify you!');
+          console.log(e);
+        });
+        return;
+      }
       const link = 'https://www.reddit.com/message/compose?to=RLMarket&subject=Reddit%20Verification&message='
                     +encodeURIComponent(REDDIT_VERIFICATION_STRING.replace('%user%', msg.member.user.username).replace('%code%', user.redditKey));
       msg.member.user.sendMessage('Click on the following link. After hitting "send", you should be verified within ten seconds\n\n'+link);
