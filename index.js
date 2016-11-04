@@ -11,10 +11,10 @@ const bot = new Discord.Client();
 
 const reddit = new Snoowrap({
   userAgent: 'InventoryReader v1.0.0 by /u/demipixel',
-    clientId: config.get('reddit.id'),
-    clientSecret: config.get('reddit.secret'),
-    username: config.get('reddit.username'),
-    password: config.get('reddit.password')
+  clientId: config.get('reddit.id'),
+  clientSecret: config.get('reddit.secret'),
+  username: config.get('reddit.username'),
+  password: config.get('reddit.password')
 });
 
 /* DATABASE */
@@ -93,7 +93,7 @@ bot.on('disconnected', () => {
 });
 
 bot.on('guildMemberAdd', (guild, member) => {
-  guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to '+guild.channels.find('name', 'commands')+' and type `!verify`!');
+  guild.defaultChannel.sendMessage('Welcome, '+member+'! Go to '+guild.channels.find('name', 'commands')+' and type `!verify` to view trading channels!');
 });
 
 bot.on('guildMemberRemove', (guild, member) => {
