@@ -112,6 +112,8 @@ function checkCommand(str, cmd) { return str.startsWith(cmd+' ') || str == cmd; 
 bot.on('message', msg => {
   log('['+(msg.member?msg.member.id:msg.channel.id)+'] #'+(msg.channel.name || 'pm')+'-'+(msg.member ? msg.member.user.username : msg.channel.id)+': '+msg.content);
 
+  if (!msg.member) return; // Ignore PMs for now
+
   const respond = (mention, str) => {
     msg.channel.sendMessage(str !== undefined && msg.member ? (mention === true ? msg.member : mention)+': '+str : mention).catch(e => console.log(e));
     return true;
@@ -382,6 +384,9 @@ bot.on('message', msg => {
   } else if (checkCommand(msg.content, '!randomonline') && isMod) {
     const members = msg.channel.guild.roles.find('name', 'Reddit Verified').members.array().filter(m => m.user.status != 'offline');
     respond('Congratulations '+members[Math.floor(Math.random()*members.length)]);
+  } else if ((msg.content.includes('key') || msg.content.includes('$') || msg.content.includes('paypal')) && msg.channel.name.includes('bartering')) {
+    msg.delete();
+    msg.member.user.sendMessage('You can only ask for other RL items in bartering channels. No keys or cash!');
   }
 });
 
