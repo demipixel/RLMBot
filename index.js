@@ -385,6 +385,7 @@ bot.on('message', msg => {
     const members = msg.channel.guild.roles.find('name', 'Reddit Verified').members.array().filter(m => m.user.status != 'offline');
     respond('Congratulations '+members[Math.floor(Math.random()*members.length)]);
   } else if ((msg.content.includes('key') || msg.content.includes('$') || msg.content.includes('paypal')) && msg.channel.name.includes('bartering')) {
+    if (msg.member.roles.find('name', 'Moderator')) return;
     msg.delete();
     msg.member.user.sendMessage('You can only ask for other RL items in bartering channels. No keys or cash!');
   }
