@@ -193,12 +193,12 @@ bot.on('message', msg => {
     });
   } else if (checkCommand(msg.content, '!bans') && isMod) {
     if (!modAction) return respond(true, 'This command can only be performed in #mod-action');
+    else if (!msg.content.replace('!bans', '').trim()) return respond(true, 'Usage: `!bans <@User or user id>`')
 
     db.getUserFromString(msg.channel.guild, msg.content.replace('!bans', '').trim(), (err, userId) => {
       if (checkErr(err)) return;
-      else if (!userId) return respond(true, 'Could not find that user!');
 
-      db.getBans(userId, (err, bans) => {
+      db.getBans(userId || msg.content.replace('!bans', '').trim(), (err, bans) => {
         if (checkErr(err)) return;
         if (!bans.length) return respond(true, 'This user has no bans.');
         respond(true, 'Active bans are in bold:\n'+bans.map((b,i) => {
