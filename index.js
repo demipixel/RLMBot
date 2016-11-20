@@ -200,7 +200,7 @@ bot.on('message', msg => {
 
       db.getBans(userId || msg.content.replace('!bans', '').trim(), (err, bans) => {
         if (checkErr(err)) return;
-        if (!bans.length) return respond(true, 'This user has no bans.');
+        if (!bans.length) return respond(true, 'This user has no bans'+(!userId ? ' or does not exist' : '')+'!');
         respond(true, 'Active bans are in bold:\n'+bans.map((b,i) => {
           const bold = !b.ended ? '**' : '';
           const cancel = b.cancelDate ? '\n    Cancelled by <@'+b.cancelFrom+'> ('+getTimeFormat(b.cancelDate) : '';
@@ -311,14 +311,13 @@ bot.on('message', msg => {
     if (item == -1) return respond(true, 'There is no item 0!');
     db.getUserFromString(msg.channel.guild, match[1], (err, userId) => {
       if (checkErr(err)) return;
-      else if (!userId) return respond(true, 'Could not find that user!');
 
-      db.getBans(userId, (err, bans) => {
+      db.getBans(userId || match[1], (err, bans) => {
         if (checkErr(err)) return;
         if (item >= bans.length) {
           if (bans.length > 2) return respond(true, 'There are only '+bans.length+' bans on this user!');
           else if (bans.length == 1) return respond(true, 'There is only 1 ban on this user!');
-          else return respond(true, 'This user has no bans!');
+          else return respond(true, 'This user has no bans'+(!userId ? ' or does not exist' : '')+'!');
         }
         const b = bans[item];
         const wasBan = b.length > 0;
@@ -341,14 +340,13 @@ bot.on('message', msg => {
 
     db.getUserFromString(msg.channel.guild, match[1], (err, userId) => {
       if (checkErr(err)) return;
-      else if (!userId) return respond(true, 'Could not find that user!');
 
-      db.getBans(userId, (err, bans) => {
+      db.getBans(userId || match[1], (err, bans) => {
         if (checkErr(err)) return;
         if (item >= bans.length) {
           if (bans.length > 2) return respond(true, 'There are only '+bans.length+' bans on this user!');
           else if (bans.length == 1) return respond(true, 'There is only 1 ban on this user!');
-          else return respond(true, 'This user has no bans!');
+          else return respond(true, 'This user has no bans'+(!userId ? ' or does not exist' : '')+'!');
         } else if (bans[item].ended) return respond(true, 'This ban has already ended!');
 
         savedActions[msg.member.id] = {
