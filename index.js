@@ -194,7 +194,7 @@ bot.on('message', msg => {
   } else if (checkCommand(msg.content, '!bans') && isMod) {
     if (!modAction) return respond(true, 'This command can only be performed in #mod-action');
 
-    db.getUserFromString(msg.channel.guild, msg.content.replace('!bans', ''), (err, userId) => {
+    db.getUserFromString(msg.channel.guild, msg.content.replace('!bans', '').trim(), (err, userId) => {
       if (checkErr(err)) return;
       else if (!userId) return respond(true, 'Could not find that user!');
 

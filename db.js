@@ -116,7 +116,7 @@ module.exports = function(db, reddit) {
   const redditRegex = /^\/?u\/(.+)/;
 
   function getUserFromString(guild, str, cb) {
-    const u = guild.members.get(str.slice(2, -1)) || guild.members.get(str);
+    const u = guild.members.get(str.slice(2, -1)) || guild.members.get(str.slice(3, -1)) || guild.members.get(str);
     if (u) return cb(null, u.id);
     else if (str.match(redditRegex)) {
       getUserReddit(str.match(redditRegex)[1], (err, user) => {
